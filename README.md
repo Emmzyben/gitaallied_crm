@@ -1,0 +1,1 @@
+# gitaallied_crm
