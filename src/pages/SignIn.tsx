@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Headphones } from 'lucide-react';
+import { useUser } from './user'; // ✅ Import your context
+import { useNotification } from '../components/dashboard/NotificationContext';
 
 const SignIn: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const { login } = useUser(); // ✅ Access login function
+  const { showNotification } = useNotification(); // ✅ Access notification function
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add authentication logic here
-    navigate('/');
+    try {
+      await login(email, password); // ✅ Call login with email/username and password
+    } catch (err) {
+      console.error('Login failed:', err);
+      showNotification({ type: 'error', message: 'Login failed. Please check your credentials.' });
+    }
   };
 
   return (

@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Headphones } from 'lucide-react';
+import useSignup from '../hooks/useSignUp'; // ✅ Import your signup hook
+import { useNotification } from '../components/dashboard/NotificationContext';
 
 const SignUp: React.FC = () => {
+    const { showNotification } = useNotification();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
+    confirmPassword: '',
     company: '',
     role: 'agent'
   });
-  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const navigate = useNavigate();
+  const { handleSignup, loading } = useSignup();
+   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add registration logic here
-    navigate('/');
+
+    if (formData.password !== formData.confirmPassword) {
+      showNotification({ type: 'error', message: 'Passwords do not match!' });
+      return;
+    }
+
+    handleSignup(formData, navigate); // pass form data and navigation
   };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -42,7 +54,7 @@ const SignUp: React.FC = () => {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <Link to="/signin" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to="/" className="font-medium text-blue-600 hover:text-blue-500">
             Sign in
           </Link>
         </p>
@@ -64,7 +76,7 @@ const SignUp: React.FC = () => {
                     required
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                    className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -81,7 +93,7 @@ const SignUp: React.FC = () => {
                     required
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                    className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -100,7 +112,7 @@ const SignUp: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -118,7 +130,36 @@ const SignUp: React.FC = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm pr-10"
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                Confirm password
+              </label>
+              <div className="mt-1 relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
                 />
                 <button
                   type="button"
@@ -146,7 +187,7 @@ const SignUp: React.FC = () => {
                   required
                   value={formData.company}
                   onChange={handleChange}
-                  className="block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm sm:text-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -161,23 +202,28 @@ const SignUp: React.FC = () => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm sm:text-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="agent">Agent</option>
-                  <option value="supervisor">Supervisor</option>
-                  <option value="manager">Manager</option>
-                  <option value="administrator">Administrator</option>
+                  <option value="administrator">Admin</option>
+                   <option value="agent">Agent</option>
                 </select>
               </div>
             </div>
 
             <div>
-              <button
+                <button
                 type="submit"
-                className="flex w-full justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-              >
-                Create account
-              </button>
+                disabled={loading}
+                className={`w-full flex justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+                >
+                {loading ? (
+                  <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                ) : null}
+                {loading ? 'Creating...' : 'Create account'}
+                </button>
             </div>
           </form>
         </div>

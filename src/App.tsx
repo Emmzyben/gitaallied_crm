@@ -12,26 +12,32 @@ import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import { UserProvider } from './pages/user';
+import { NotificationProvider } from './components/dashboard/NotificationContext';
 import './App.css';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/" element={<Layout><Dashboard /></Layout>} />
-        <Route path="/customers" element={<Layout><Customers /></Layout>} />
-        <Route path="/call-logs" element={<Layout><CallLogs /></Layout>} />
-        <Route path="/agent-performance" element={<Layout><AgentPerformance /></Layout>} />
-        <Route path="/tickets" element={<Layout><Tickets /></Layout>} />
-        <Route path="/tickets/:id" element={<Layout><TicketDetails /></Layout>} />
-        <Route path="/reports" element={<Layout><Reports /></Layout>} />
-        <Route path="/settings" element={<Layout><Settings /></Layout>} />
-        <Route path="*" element={<Layout><NotFound /></Layout>} />
-      </Routes>
+      <NotificationProvider>
+      <UserProvider>
+        <Routes>
+          <Route path="/" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/customers" element={<Layout><Customers /></Layout>} />
+          <Route path="/call-logs" element={<Layout><CallLogs /></Layout>} />
+          <Route path="/agent-performance" element={<Layout><AgentPerformance /></Layout>} />
+          <Route path="/tickets" element={<Layout><Tickets /></Layout>} />
+          <Route path="/tickets/:id" element={<Layout><TicketDetails /></Layout>} />
+          <Route path="/reports" element={<Layout><Reports /></Layout>} />
+          <Route path="/settings" element={<Layout><Settings /></Layout>} />
+          <Route path="*" element={<Layout><NotFound /></Layout>} />
+        </Routes>
+      </UserProvider>
+</NotificationProvider>
     </Router>
   );
 }
 
-export default App
+export default App;

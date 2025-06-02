@@ -1,18 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Phone, 
-  BarChart, 
-  Ticket, 
-  FileText, 
+import {
+  LayoutDashboard,
+  Users,
+  Phone,
+  BarChart,
+  Ticket,
+  FileText,
   Settings,
+  LogOut,
   Headphones
 } from 'lucide-react';
+import { useUser } from '../../pages/user'; 
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
+  const { logout } = useUser();
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -25,7 +28,7 @@ const Sidebar: React.FC = () => {
     { path: '/agent-performance', label: 'Agent Performance', icon: <BarChart size={18} /> },
     { path: '/tickets', label: 'Tickets', icon: <Ticket size={18} /> },
     { path: '/reports', label: 'Reports', icon: <FileText size={18} /> },
-    { path: '/settings', label: 'Settings', icon: <Settings size={18} /> },
+    { path: '/settings', label: 'Settings', icon: <Settings size={18} /> }
   ];
 
   return (
@@ -58,6 +61,19 @@ const Sidebar: React.FC = () => {
               </Link>
             </li>
           ))}
+
+          {/* Logout Button */}
+          <li>
+            <button
+              onClick={logout}
+              className="w-full text-left flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              <span className="mr-3 text-gray-500">
+                <LogOut size={18} />
+              </span>
+              Logout
+            </button>
+          </li>
         </ul>
       </nav>
 
