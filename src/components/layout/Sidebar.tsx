@@ -4,14 +4,13 @@ import {
   LayoutDashboard,
   Users,
   Phone,
-  BarChart,
+  // BarChart,
   Ticket,
-  FileText,
   Settings,
   LogOut,
   Headphones
 } from 'lucide-react';
-import { useUser } from '../../pages/user'; 
+import { useUser } from '../../pages/user.tsx'; 
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -22,12 +21,11 @@ const Sidebar: React.FC = () => {
   };
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+    { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/customers', label: 'Customers', icon: <Users size={18} /> },
     { path: '/call-logs', label: 'Call Logs', icon: <Phone size={18} /> },
-    { path: '/agent-performance', label: 'Agent Performance', icon: <BarChart size={18} /> },
+    // { path: '/agent-performance', label: 'Agent Performance', icon: <BarChart size={18} /> },
     { path: '/tickets', label: 'Tickets', icon: <Ticket size={18} /> },
-    { path: '/reports', label: 'Reports', icon: <FileText size={18} /> },
     { path: '/settings', label: 'Settings', icon: <Settings size={18} /> }
   ];
 
@@ -77,18 +75,7 @@ const Sidebar: React.FC = () => {
         </ul>
       </nav>
 
-      {/* User Profile Summary */}
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-            <span className="text-xs font-medium text-blue-700">AU</span>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-700">Admin User</p>
-            <p className="text-xs text-gray-500">admin@gitaalliedtech.com</p>
-          </div>
-        </div>
-      </div>
+    
     </aside>
   );
 };

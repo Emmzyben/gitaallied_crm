@@ -10,56 +10,67 @@ import {
   Calendar
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useFetchDashboardData } from '../hooks/useFetchDashboardData';
-
 import StatCard from '../components/dashboard/StatCard';
 import RecentCalls from '../components/dashboard/RecentCalls';
 import PerformanceChart from '../components/dashboard/PerformanceChart';
 
 const Dashboard: React.FC = () => {
+  const recentCalls = [
+    {
+      id: '1',
+      customer: { name: 'John Smith' },
+      agent: 'Sarah Johnson',
+      time: 'Today, 9:30 AM',
+      duration: '5m 23s',
+      status: 'completed' as const
+    },
+    {
+      id: '2',
+      customer: { name: 'Emily Brown' },
+      agent: 'Michael Chen',
+      time: 'Today, 10:15 AM',
+      duration: '3m 45s',
+      status: 'completed' as const
+    },
+    {
+      id: '3',
+      customer: { name: 'Robert Garcia' },
+      agent: 'Jessica Lee',
+      time: 'Today, 11:02 AM',
+      duration: '-',
+      status: 'missed' as const
+    },
+    {
+      id: '4',
+      customer: { name: 'Amy Wilson' },
+      agent: 'David Kim',
+      time: 'Today, 11:47 AM',
+      duration: '8m 12s',
+      status: 'transferred' as const
+    },
+    {
+      id: '5',
+      customer: { name: 'Thomas Moore' },
+      agent: 'Sarah Johnson',
+      time: 'Today, 1:23 PM',
+      duration: '4m 18s',
+      status: 'completed' as const
+    }
+  ];
 
-  // ✅ Pass the user ID to the hook — so it works only for this user!
-  const { 
-    totalCalls,
-    avgWaitTime,
-    resolutionRate,
-    missedCalls,
-    satisfactionScore,
-    slaCompliance,
-    recentCalls,
-    performanceData,
-    loading,
-    error
-  } = useFetchDashboardData();
+  // Sample data for performance chart
+  const performanceData = [
+    { name: 'Sarah J.', calls: 65, resolutionRate: 92 },
+    { name: 'Michael C.', calls: 45, resolutionRate: 88 },
+    { name: 'Jessica L.', calls: 58, resolutionRate: 90 },
+    { name: 'David K.', calls: 52, resolutionRate: 85 },
+    { name: 'Lisa T.', calls: 49, resolutionRate: 89 }
+  ];
 
   const handleExport = () => {
-    const csvContent = `Metric,Value
-Total Calls,${totalCalls}
-Average Wait Time,${avgWaitTime}
-Resolution Rate,${resolutionRate}%
-Missed Calls,${missedCalls}
-Customer Satisfaction,${satisfactionScore}/5
-SLA Compliance,${slaCompliance}%
-`;
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'dashboard_summary.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Implement export functionality
+    console.log('Exporting data...');
   };
-
-  if (loading) {
-    return <div className="p-6 text-gray-500">Loading dashboard...</div>;
-  }
-
-  if (error) {
-    return <div className="p-6 text-red-500">Error: {error}</div>;
-  }
 
   return (
     <div className="space-y-6">
@@ -85,7 +96,7 @@ SLA Compliance,${slaCompliance}%
         <Link to="/call-logs">
           <StatCard
             title="Total Calls"
-            value={totalCalls}
+            value="1,284"
             change={{ value: 12, isPositive: true }}
             icon={<Phone />}
             color="blue"
@@ -94,7 +105,7 @@ SLA Compliance,${slaCompliance}%
         <Link to="/agent-performance">
           <StatCard
             title="Average Wait Time"
-            value={avgWaitTime}
+            value="1m 45s"
             change={{ value: 8, isPositive: false }}
             icon={<Clock />}
             color="cyan"
@@ -103,7 +114,7 @@ SLA Compliance,${slaCompliance}%
         <Link to="/reports">
           <StatCard
             title="Resolution Rate"
-            value={`${resolutionRate}%`}
+            value="89%"
             change={{ value: 2, isPositive: true }}
             icon={<UserCheck />}
             color="green"
@@ -111,24 +122,18 @@ SLA Compliance,${slaCompliance}%
         </Link>
       </div>
 
-      {/* Performance & Recent Calls */}
+      {/* Charts and Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <PerformanceChart data={performanceData} />
-        <RecentCalls calls={recentCalls.map(call => ({
-          ...call,
-          agent: call.agent ?? 'Unknown',
-          time: call.time ?? '',
-          duration: call.duration ?? '',
-          status: (call.status as "completed" | "missed" | "transferred") ?? "completed"
-        }))} />
+        <RecentCalls calls={recentCalls} />
       </div>
 
-      {/* Extra Stats */}
+      {/* Additional Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/call-logs">
           <StatCard
             title="Missed Calls"
-            value={missedCalls}
+            value="43"
             change={{ value: 5, isPositive: false }}
             icon={<AlertCircle />}
             color="red"
@@ -137,7 +142,7 @@ SLA Compliance,${slaCompliance}%
         <Link to="/reports">
           <StatCard
             title="Customer Satisfaction"
-            value={`${satisfactionScore}/5`}
+            value="4.7/5"
             change={{ value: 3, isPositive: true }}
             icon={<MessageCircle />}
             color="purple"
@@ -146,7 +151,7 @@ SLA Compliance,${slaCompliance}%
         <Link to="/reports">
           <StatCard
             title="SLA Compliance"
-            value={`${slaCompliance}%`}
+            value="94%"
             change={{ value: 1, isPositive: true }}
             icon={<BarChart />}
             color="yellow"
