@@ -18,7 +18,6 @@ import PerformanceChart from '../components/dashboard/PerformanceChart';
 
 const Dashboard: React.FC = () => {
 
-  // ✅ Pass the user ID to the hook — so it works only for this user!
   const { 
     totalCalls,
     avgWaitTime,

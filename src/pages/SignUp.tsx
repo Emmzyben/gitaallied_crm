@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Headphones } from 'lucide-react';
 import useSignup from '../hooks/useSignUp'; // ✅ Import your signup hook
 import { useNotification } from '../components/dashboard/NotificationContext';
+import { useUser } from './user'; 
 
 const SignUp: React.FC = () => {
-    const { showNotification } = useNotification();
+  const { showNotification } = useNotification();
+  const { login } = useUser(); 
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -14,13 +16,12 @@ const SignUp: React.FC = () => {
     password: '',
     confirmPassword: '',
     company: '',
-    role: 'agent'
+    role: ''
   });
 
-
-  const navigate = useNavigate();
   const { handleSignup, loading } = useSignup();
-   const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
@@ -28,9 +29,13 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    handleSignup(formData, navigate); // pass form data and navigation
+    try {
+      await handleSignup(formData, () => {}); // Pass empty navigate callback to prevent navigation here
+      await login(formData.email, formData.password); // Call login to set session and user state
+    } catch {
+      // handleSignup already shows notification on error
+    }
   };
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -204,6 +209,7 @@ const SignUp: React.FC = () => {
                   onChange={handleChange}
                   className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm sm:text-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500"
                 >
+                  <option value="">Select option</option>
                   <option value="administrator">Admin</option>
                    <option value="agent">Agent</option>
                 </select>

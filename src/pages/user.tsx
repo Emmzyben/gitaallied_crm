@@ -7,7 +7,7 @@ import { useNotification } from '../components/dashboard/NotificationContext';
 // Type definitions
 interface UserType {
   id: string;
-  usertype: string;
+  role: string;
   username?: string;
   email?: string;
   password?: string;
@@ -42,13 +42,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
 
-
   // Auto-login from localStorage
   useEffect(() => {
     const userId = localStorage.getItem('userId');
-    const usertype = localStorage.getItem('usertype');
-    if (userId && usertype) {
-      setUser({ id: userId, usertype });
+    const role = localStorage.getItem('role');
+    if (userId && role) {
+      setUser({ id: userId, role });
     }
   }, []);
 
@@ -65,12 +64,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       }
     } catch (error) {
       console.error('Error fetching users:', error);
-    showNotification({ type: 'error', message: 'Failed to fetch users.' });
+      showNotification({ type: 'error', message: 'Failed to fetch users.' });
       return null;
     }
   };
 
-  // Login function
   const login = async (usernameOrEmail: string, password: string): Promise<void> => {
     try {
       const users = await fetchUsers();
@@ -88,24 +86,24 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       if (userKey) {
         const matchedUser = users[userKey];
         localStorage.setItem('userId', userKey);
-        localStorage.setItem('usertype', matchedUser.usertype);
-        setUser({ ...matchedUser, id: userKey, usertype: matchedUser.usertype });
+        localStorage.setItem('role', matchedUser.role);
+        setUser({ ...matchedUser, id: userKey, role: matchedUser.role });
         showNotification({ type: 'success', message: 'Login successful!' });
-        navigateUser(matchedUser.usertype);
+        navigateUser(matchedUser.role);
       } else {
         showNotification({ type: 'error', message: 'Invalid username/email or password.' });
       }
     } catch (error) {
       console.error('Login failed:', error);
-    showNotification({ type: 'error', message: 'Error during login.' });
+      showNotification({ type: 'error', message: 'Error during login.' });
     }
   };
 
-  // Route user based on type
-  const navigateUser = (usertype: string): void => {
-    switch (usertype) {
-      case 'admin':
-        navigate('/dashboard');
+  // Route user based on role
+  const navigateUser = (role: string): void => {
+    switch (role) {
+      case 'administrator':
+        navigate('/admin/agents');
         break;
       case 'agent':
         navigate('/dashboard');

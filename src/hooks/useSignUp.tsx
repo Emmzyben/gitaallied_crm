@@ -74,7 +74,6 @@ const useSignup = () => {
       // Save user to database
       const newUserRef = push(ref(database, 'crm_table'));
       await set(newUserRef, newUser);
-      localStorage.setItem("userId", newUserRef.key || "");
 
       // Navigate to dashboard
       navigate("/dashboard");

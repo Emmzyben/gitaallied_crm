@@ -4,7 +4,6 @@ import {
   LayoutDashboard,
   Users,
   Phone,
-  // BarChart,
   Ticket,
   Settings,
   LogOut,
@@ -14,20 +13,30 @@ import { useUser } from '../../pages/user.tsx';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
-  const { logout } = useUser();
+  const { user, logout } = useUser();
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
-  const navItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-    { path: '/customers', label: 'Customers', icon: <Users size={18} /> },
-    { path: '/call-logs', label: 'Call Logs', icon: <Phone size={18} /> },
-    // { path: '/agent-performance', label: 'Agent Performance', icon: <BarChart size={18} /> },
-    { path: '/tickets', label: 'Tickets', icon: <Ticket size={18} /> },
-    { path: '/settings', label: 'Settings', icon: <Settings size={18} /> }
-  ];
+  let navItems: { path: string; label: string; icon: JSX.Element }[] = [];
+
+  if (user?.role === 'administrator') {
+    navItems = [
+      { path: '/admin/agents', label: 'Agents', icon: <Users size={18} /> },
+      { path: '/admin/tickets', label: 'Tickets', icon: <Ticket size={18} /> },
+      { path: '/admin/calllogs', label: 'Call Logs', icon: <Phone size={18} /> },
+      { path: '/settings', label: 'Settings', icon: <Settings size={18} /> }
+    ];
+  } else if (user?.role === 'agent') {
+    navItems = [
+      { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
+      { path: '/customers', label: 'Customers', icon: <Users size={18} /> },
+      { path: '/call-logs', label: 'Call Logs', icon: <Phone size={18} /> },
+      { path: '/tickets', label: 'Tickets', icon: <Ticket size={18} /> },
+      { path: '/settings', label: 'Settings', icon: <Settings size={18} /> }
+    ];
+  }
 
   return (
     <aside className="w-64 bg-white h-screen sticky top-0 border-r border-gray-200 shadow-sm flex flex-col">
