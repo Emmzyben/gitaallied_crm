@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, Clock, Calendar, Tag, Trash2 } from 'lucide-react';
+import { Search, Plus, Clock, Calendar, Tag} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFetchTickets } from '../hooks/useFetchTickets';
 
@@ -17,6 +17,9 @@ const Tickets: React.FC = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [showDateRange, setShowDateRange] = useState(false);
+
+  // Dropdown menu state for actions
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
   // Helper to render priority badge
   const renderPriorityBadge = (priority: string) => {
@@ -342,15 +345,69 @@ const Tickets: React.FC = () => {
                       : 'N/A'}
                   </td>
                   <td className="px-4 py-2 text-gray-500">{ticket.agent}</td>
-                  <td className="px-4 py-2 text-gray-500">{ticket.lastUpdate}</td>
-                  <td className="px-4 py-2 text-right" onClick={e => e.stopPropagation()}>
-                    <button
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => handleDelete(ticket.id)}
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                  <td className="px-4 py-2 text-gray-500">
+                    {ticket.lastUpdate
+                      ? new Date(ticket.lastUpdate).toLocaleString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })
+                      : 'N/A'}
                   </td>
+                    <td className="px-4 py-2 text-right" onClick={e => e.stopPropagation()}>
+                    <div className="relative inline-block text-left z-[10000]">
+                      <button
+                        className="p-2 rounded-full hover:bg-gray-100"
+                        onClick={e => {
+                          e.stopPropagation();
+                          setDropdownOpen(dropdownOpen === ticket.id ? null : ticket.id);
+                        }}
+                      >
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                          <circle cx="5" cy="12" r="2" fill="currentColor" />
+                          <circle cx="12" cy="12" r="2" fill="currentColor" />
+                          <circle cx="19" cy="12" r="2" fill="currentColor" />
+                        </svg>
+                      </button>
+                      {dropdownOpen === ticket.id && (
+                        <>
+                          {/* Overlay to close dropdown when clicking outside */}
+                          <div
+                            className="fixed inset-0 z-[90]"
+                            onClick={() => setDropdownOpen(null)}
+                          />
+                          <div
+                            className="origin-bottom-right absolute right-0 bottom-10 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-[110]"
+                            onClick={e => e.stopPropagation()}
+                          >
+                            <div className="py-1">
+                              <button
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                onClick={() => {
+                                  setDropdownOpen(null);
+                                  navigate(`/tickets/${ticket.id}`);
+                                }}
+                              >
+                                Details
+                              </button>
+                              <button
+                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                onClick={() => {
+                                  setDropdownOpen(null);
+                                  handleDelete(ticket.id);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    </td>
                 </tr>
               ))}
             </tbody>

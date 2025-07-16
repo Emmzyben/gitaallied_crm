@@ -5,6 +5,8 @@ import { useUser } from '../pages/user';
 
 interface Ticket {
   customer: string;
+  customerEmail?: string;
+  customerPhone?: string;
   subject: string;
   description?: string;
   priority?: string;

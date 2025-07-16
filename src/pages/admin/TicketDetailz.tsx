@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Paperclip, Clock, AlertCircle } from 'lucide-react';
-import { useFetchTicket } from '../hooks/useFetchTicket';
-import { useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
-import { useAddTicketUpdate } from '../hooks/useAddTicketUpdate';
+import { ArrowLeft, MessageSquare,  Clock, AlertCircle } from 'lucide-react';
+import { useFetchTicket } from '../../hooks/useFetchTicket';
+// import { useUpdateTicketStatus } from '../../hooks/useUpdateTicketStatus';
+// import { useAddTicketUpdate } from '../../hooks/useAddTicketUpdate';
 
 const TicketDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { ticket, loading, error } = useFetchTicket(id);
-  const { updateStatus, loading: updatingStatus } = useUpdateTicketStatus();
-  const { addUpdate, loading: addingUpdate } = useAddTicketUpdate();
+  // const { updateStatus, loading: updatingStatus } = useUpdateTicketStatus();
+  // const { addUpdate, loading: addingUpdat } = useAddTicketUpdate();
 
-  const [newStatus, setNewStatus] = useState<string>('');
-  const [replyContent, setReplyContent] = useState<string>('');
+  // const [newStatus, setNewStatus] = useState<string>('');
+  // const [replyContent, setReplyContent] = useState<string>('');
 
   if (loading) {
     return <div>Loading ticket details...</div>;
@@ -25,7 +25,7 @@ const TicketDetails: React.FC = () => {
           <h2 className="text-2xl font-semibold text-gray-900">Ticket not found</h2>
           <p className="mt-2 text-gray-600">The ticket you're looking for doesn't exist or has been removed.</p>
           <Link
-            to="/tickets"
+            to="/admin/tickets"
             className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-500"
           >
             <ArrowLeft size={16} className="mr-2" />
@@ -65,61 +65,61 @@ const TicketDetails: React.FC = () => {
     );
   };
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNewStatus(e.target.value);
-  };
+  // const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setNewStatus(e.target.value);
+  // };
 
-  const handleUpdateStatus = async () => {
-    if (!newStatus) return;
-    await updateStatus(ticket.id, newStatus);
-  };
+  // const handleUpdateStatus = async () => {
+  //   if (!newStatus) return;
+  //   await updateStatus(ticket.id, newStatus);
+  // };
 
-  const handleCloseTicket = async () => {
-    await updateStatus(ticket.id, 'resolved');
-  };
+  // const handleCloseTicket = async () => {
+  //   await updateStatus(ticket.id, 'resolved');
+  // };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
           <Link
-        to="/tickets"
-        className="inline-flex items-center px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            to="/admin/all-tickets"
+            className="inline-flex items-center px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-        <ArrowLeft size={18} className="mr-2" />
-        Back to tickets
+            <ArrowLeft size={18} className="mr-2" />
+            Back to tickets
           </Link>
-          <h1 className="text-base font-bold text-gray-900 mt-2 sm:mt-0">Ticket {ticket.id}</h1>
-          <div className="mt-2 sm:mt-0">{renderStatusBadge(ticket.status || '')}</div>
+          <h1 className="text-1 font-bold text-gray-900">Ticket {ticket.id}</h1>
+          {renderStatusBadge(ticket.status || '')}
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        {/* <div className="flex items-center space-x-3">
           <button
-        onClick={handleCloseTicket}
-        disabled={updatingStatus}
-        className="px-2 py-2 bg-green-600 border border-gray-300 rounded-lg text-sm font-medium text-[#fff] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            onClick={handleCloseTicket}
+            disabled={updatingStatus}
+            className="px-2 py-2 bg-green-600 border border-gray-300 rounded-lg text-sm font-medium text-[#fff] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
           >
-        Close Ticket
+            Close Ticket
           </button>
           <select
-        value={newStatus}
-        onChange={handleStatusChange}
-        disabled={updatingStatus}
-        className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            value={newStatus}
+            onChange={handleStatusChange}
+            disabled={updatingStatus}
+            className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-        <option value="">Select status</option>
-        <option value="open">Open</option>
-        <option value="pending">Pending</option>
-        <option value="resolved">Resolved</option>
+            <option value="">Select status</option>
+            <option value="open">Open</option>
+            <option value="pending">Pending</option>
+            <option value="resolved">Resolved</option>
           </select>
           <button
-        onClick={handleUpdateStatus}
-        disabled={updatingStatus || !newStatus}
-        className="px-4 py-2 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+            onClick={handleUpdateStatus}
+            disabled={updatingStatus || !newStatus}
+            className="px-4 py-2 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
           >
-        Update Status
+            Update Status
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -138,7 +138,10 @@ const TicketDetails: React.FC = () => {
                   <Clock size={16} className="mr-1" />
                     {ticket.created ? new Date(ticket.created).toLocaleString() : 'N/A'}
                 </span>
-               
+                <span className="flex items-center">
+                  <MessageSquare size={16} className="mr-1" />
+                  {ticket.updates?.length || 0} responses
+                </span>
               </div>
             </div>
           </div>
@@ -204,7 +207,7 @@ const TicketDetails: React.FC = () => {
             </div>
 
             {/* Reply Box */}
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <label htmlFor="reply" className="sr-only">Add reply</label>
               <div className="relative">
             <textarea
@@ -221,25 +224,25 @@ const TicketDetails: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="mt-2 flex justify-end">
+            <div className="mt-2 flex justify-end">
             <button
               onClick={async () => {
-                if (!replyContent.trim()) return;
-                await addUpdate(ticket.id, {
-                  type: 'comment',
-                  content: replyContent.trim(),
-                  author:ticket.agent || 'Unknown', 
-                  timestamp: new Date().toISOString(),
-                });
-                setReplyContent('');
+              if (!replyContent.trim()) return;
+              // await addUpdate(ticket.id, {
+              //   type: 'comment',
+              //   content: replyContent.trim(),
+              //   author: ticket.agent || 'Unknown',
+              //   timestamp: new Date().toISOString(),
+              // });
+              setReplyContent('');
               }}
-              disabled={addingUpdate || !replyContent.trim()}
+              disabled
               className="px-4 py-2 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
               Send Reply
             </button>
-          </div>
             </div>
+            </div> */}
           </div>
         </div>
 

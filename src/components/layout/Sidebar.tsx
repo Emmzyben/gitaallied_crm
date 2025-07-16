@@ -7,7 +7,6 @@ import {
   Ticket,
   Settings,
   LogOut,
-  Headphones
 } from 'lucide-react';
 import { useUser } from '../../pages/user.tsx'; 
 
@@ -24,7 +23,7 @@ const Sidebar: React.FC = () => {
   if (user?.role === 'administrator') {
     navItems = [
       { path: '/admin/agents', label: 'Agents', icon: <Users size={18} /> },
-      { path: '/admin/tickets', label: 'Tickets', icon: <Ticket size={18} /> },
+      { path: '/admin/all-tickets', label: 'Tickets', icon: <Ticket size={18} /> },
       { path: '/admin/calllogs', label: 'Call Logs', icon: <Phone size={18} /> },
       { path: '/settings', label: 'Settings', icon: <Settings size={18} /> }
     ];
@@ -43,8 +42,9 @@ const Sidebar: React.FC = () => {
       {/* Logo */}
       <div className="flex items-center px-6 py-5 border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <Headphones className="h-7 w-7 text-blue-600" />
-          <span className="text-xl font-semibold text-gray-800">GitaAllied</span>
+           <div className="flex items-center space-x-2">
+            <img src="../../assets/logo.svg" alt="logo" />
+          </div>
         </div>
       </div>
 

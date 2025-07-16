@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff, Headphones } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useUser } from './user'; // ✅ Import your context
 import { useNotification } from '../components/dashboard/NotificationContext';
 
@@ -26,8 +26,7 @@ const SignIn: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="flex items-center space-x-2">
-            <Headphones className="h-12 w-12 text-blue-600" />
-            <span className="text-3xl font-semibold text-gray-900">GitaAllied</span>
+            <img src="../../assets/logo.svg" alt="logo" />
           </div>
         </div>
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">

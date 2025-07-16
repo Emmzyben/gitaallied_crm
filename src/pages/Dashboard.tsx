@@ -90,7 +90,7 @@ SLA Compliance,${slaCompliance}%
             color="blue"
           />
         </Link>
-        <Link to="/agent-performance">
+        <Link to="">
           <StatCard
             title="Average Wait Time"
             value={avgWaitTime}
@@ -99,7 +99,7 @@ SLA Compliance,${slaCompliance}%
             color="cyan"
           />
         </Link>
-        <Link to="/reports">
+        <Link to="">
           <StatCard
             title="Resolution Rate"
             value={`${resolutionRate}%`}

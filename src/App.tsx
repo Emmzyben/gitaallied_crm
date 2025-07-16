@@ -6,6 +6,7 @@ import CallLogs from './pages/CallLogs';
 import AgentPerformance from './pages/AgentPerformance';
 import Tickets from './pages/Tickets';
 import TicketDetails from './pages/TicketDetails';
+import TicketDetailz from './pages/admin/TicketDetailz.tsx';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
@@ -16,7 +17,7 @@ import CreateTicket from './pages/CreateTicket.tsx';
 import AddUser from './pages/AddUser.tsx';
 import EditUser from './pages/EditUser.tsx';
 import Agents from './pages/admin/agents';
-import AdminTickets from './pages/admin/tickets';
+import AllTickets from './pages/admin/allTickets.tsx';
 import AdminCallLogs from './pages/admin/calllogs';
 import { UserProvider } from './pages/user.tsx';
 import { NotificationProvider } from './components/dashboard/NotificationContext';
@@ -39,8 +40,9 @@ function App() {
           <Route path="/reports" element={<Layout><Reports /></Layout>} />
           <Route path="/settings" element={<Layout><Settings /></Layout>} />
           <Route path="/admin/agents" element={<Layout><Agents /></Layout>} />
-          <Route path="/admin/tickets" element={<Layout><AdminTickets /></Layout>} />
+          <Route path="/admin/all-tickets" element={<Layout><AllTickets /></Layout>} />
           <Route path="/admin/calllogs" element={<Layout><AdminCallLogs /></Layout>} />
+          <Route path="/admin/all-tickets/:id" element={<Layout><TicketDetailz /></Layout >} />
           <Route path="*" element={<Layout><NotFound /></Layout>} />
           <Route path="/add-customer" element={<Layout><AddCustomer /></Layout>} />
           <Route path="/create-ticket" element={<Layout><CreateTicket /></Layout>} />

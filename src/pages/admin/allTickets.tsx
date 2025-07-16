@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { Calendar } from 'lucide-react';
 import { useFetchAllTickets } from '../../hooks/useFetchAllTickets';
+import { useNavigate } from 'react-router-dom';
 
 const TICKETS_PER_PAGE = 10;
-
 const AllTickets: React.FC = () => {
   const { tickets, loading, error } = useFetchAllTickets();
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPriority, setSelectedPriority] = useState<string | null>(null);
@@ -231,11 +232,15 @@ const AllTickets: React.FC = () => {
             </thead>
             <tbody>
               {paginatedTickets.map(ticket => (
-                <tr key={ticket.id} className="hover:bg-gray-50 cursor-pointer">
+                <tr
+                  key={ticket.id}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/admin/all-tickets/${ticket.id}`)}
+                >
                   <td className="px-4 py-2">{ticket.customer}</td>
                   <td className="px-4 py-2">{ticket.priority ? renderPriorityBadge(ticket.priority) : 'N/A'}</td>
                   <td className="px-4 py-2">{ticket.status ? renderStatusBadge(ticket.status) : 'N/A'}</td>
-                  <td className="px-4 py-2 text-gray-500">
+                    <td className="px-4 py-2 text-gray-500">
                     {ticket.created
                       ? new Date(ticket.created).toLocaleString('en-GB', {
                           day: '2-digit',
@@ -248,7 +253,18 @@ const AllTickets: React.FC = () => {
                       : 'N/A'}
                   </td>
                   <td className="px-4 py-2 text-gray-500">{ticket.agent}</td>
-                  <td className="px-4 py-2 text-gray-500">{ticket.lastUpdate}</td>
+                   <td className="px-4 py-2 text-gray-500">
+                    {ticket.lastUpdate
+                      ? new Date(ticket.lastUpdate).toLocaleString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        })
+                      : 'N/A'}
+                  </td>
                 </tr>
               ))}
             </tbody>
